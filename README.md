@@ -77,3 +77,6 @@ git clone [https://github.com/hitksh18/SnapShot.git](https://github.com/srijared
 cd SnapShot
 
 
+![image](https://github.com/user-attachments/assets/1fbd0603-9a9a-43a4-9a56-04e5658053be)
+![image](https://github.com/user-attachments/assets/cf3a2b3c-0dd7-4a5d-aba2-6b27ea984eb8)
+![image](https://github.com/user-attachments/assets/72a64c22-e961-4c44-bc24-c3a71d7a9379)
