@@ -1,2 +1,2 @@
-template/data
-
+templates/login.html/dashboard.html
+data/posts.json
