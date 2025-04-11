@@ -55,9 +55,25 @@ All uploads are tied to the user and are not visible to others.
 ---
 
 ## How to Run Locally
+## Project Directory Structure
+snapshot/
+├── app.py
+├── static/
+│   └── gallery/
+├── templates/
+│   ├── layout.html
+│   └── index.html
+├── data/
+│   ├── posts.json
+│   └── gallery/  (old image storage)
+├── users.json
+├── requirements.txt
+└── venv
 
 ### Clone the Repository
 
 ```bash
 git clone [https://github.com/hitksh18/SnapShot.git](https://github.com/srijareddy1234/SnapShot.git
 cd SnapShot
+
+
