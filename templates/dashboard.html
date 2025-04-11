@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SnapShot</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      display: flex;
+      font-family: Arial, sans-serif;
+      background: #f4f4f4;
+      color: #333;
+      height: 100vh;
+    }
+    .container { display: flex; width: 100%; }
+    .sidebar {
+      width: 220px;
+      background-color: #2c3e50;
+      padding: 20px;
+      color: #ecf0f1;
+      display: flex;
+      flex-direction: column;
+    }
+    .logo {
+      text-align: center;
+      margin-bottom: 40px;
+      font-weight: bold;
+      font-size: 20px;
+    }
+    .menu { flex-grow: 1; }
+    .menu-btn {
+      background: none;
+      border: none;
+      color: inherit;
+      font-size: 16px;
+      padding: 12px 16px;
+      text-align: left;
+      cursor: pointer;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      border-radius: 4px;
+      transition: background 0.3s, color 0.3s;
+    }
+    .menu-btn:hover { background-color: #3c566e; }
+    .menu-btn.active {
+      background-color: #1abc9c;
+      color: #ffffff;
+      font-weight: bold;
+      box-shadow: inset 4px 0 0 #16a085;
+    }
+    .menu-btn svg {
+      fill: #ecf0f1;
+      width: 20px;
+      height: 20px;
+      flex-shrink: 0;
+    }
+    .bottom-btn { margin-top: auto; }
+    .main-content {
+      flex: 1;
+      padding: 20px;
+      overflow-y: auto;
+      background-color: #fff;
+    }
+    .content-section { display: none; }
+    .content-section.active { display: block; }
+
+    #imageInput,
+    #textInput,
+    textarea,
+    input[type="password"] {
+      display: block;
+      margin: 10px 0;
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    textarea {
+      height: 120px;
+      resize: vertical;
+    }
+    button {
+      padding: 10px 15px;
+      cursor: pointer;
+      background-color: #2c3e50;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+    }
+    button:hover { background-color: #1abc9c; }
+    .post {
+      margin-bottom: 20px;
+      padding: 10px;
+      background: #f9f9f9;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+    }
+    img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 4px;
+    }
+    .search-container { margin-bottom: 20px; }
+    #searchInput {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    .alert {
+      background-color: #dff0d8;
+      color: #3c763d;
+      padding: 10px;
+      margin-bottom: 15px;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <aside class="sidebar">
+      <h2 class="logo">SNAPSHOT</h2>
+      <nav class="menu">
+        <button id="homeBtn" class="menu-btn active">
+          <svg viewBox="0 0 24 24"><path d="M3 9.75L12 3l9 6.75V21a.75.75 0 01-.75.75H3.75A.75.75 0 013 21V9.75z"/></svg>
+          <span>Home</span>
+        </button>
+        <button id="uploadBtn" class="menu-btn">
+          <svg viewBox="0 0 24 24"><path d="M12 5v14m7-7H5"/></svg>
+          <span>Upload</span>
+        </button>
+        <button id="profileBtn" class="menu-btn">
+          <svg viewBox="0 0 24 24"><path d="M12 12c2.761 0 5-2.239 5-5s-2.239-5-5-5-5 2.239-5 5 2.239 5 5 5zm0 2c-3.314 0-6 2.686-6 6v1h12v-1c0-3.314-2.686-6-6-6z"/></svg>
+          <span>Profile</span>
+        </button>
+      </nav>
+      <button id="changePasswordBtn" class="menu-btn bottom-btn">
+        <svg viewBox="0 0 24 24"><path d="M12 17a2 2 0 100-4 2 2 0 000 4zM4 7V5a5 5 0 0110 0v2h1a2 2 0 012 2v8a2 2 0 01-2 2H4a2 2 0 01-2-2V9a2 2 0 012-2h1zm2-2a3 3 0 016 0v2H6V5z"/></svg>
+        <span>Change Password</span>
+      </button>
+    </aside>
+
+    <main class="main-content">
+      <section id="homeSection" class="content-section active">
+        <h2>All Posts</h2>
+        <div class="search-container">
+          <input type="text" id="searchInput" placeholder="Search posts..." onkeyup="filterPosts()" />
+        </div>
+        <div id="postContainer"><p>Loading posts...</p></div>
+      </section>
+
+      <section id="uploadSection" class="content-section">
+        <h2>Upload Post</h2>
+        <input type="file" id="imageInput" accept="image/*"/>
+        <textarea id="textInput" placeholder="Write a text post..."></textarea>
+        <button onclick="submitPost()">Submit</button>
+      </section>
+
+      <section id="profileSection" class="content-section">
+        <h2>User Profile</h2>
+        <div id="profileDetails">
+          <p><strong>Email:</strong> user@example.com</p>
+          <p><strong>Username:</strong> sampleuser</p>
+        </div>
+      </section>
+
+      <section id="changePasswordSection" class="content-section">
+        <h2>Change Password</h2>
+        <form onsubmit="changePassword(event)">
+          <input type="password" id="oldPassword" placeholder="Old Password" required />
+          <input type="password" id="newPassword" placeholder="New Password" required />
+          <input type="password" id="confirmPassword" placeholder="Confirm New Password" required />
+          <button type="submit">Change</button>
+        </form>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    const menuButtons = document.querySelectorAll('.menu-btn');
+    const sections = document.querySelectorAll('.content-section');
+
+    menuButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        menuButtons.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        sections.forEach(section => section.classList.remove('active'));
+        const sectionId = btn.id.replace('Btn', 'Section');
+        document.getElementById(sectionId).classList.add('active');
+      });
+    });
+
+    function filterPosts() {
+      const input = document.getElementById('searchInput').value.toLowerCase();
+      const posts = document.querySelectorAll('.post');
+      posts.forEach(post => {
+        const text = post.textContent.toLowerCase();
+        post.style.display = text.includes(input) ? 'block' : 'none';
+      });
+    }
+
+    async function submitPost() {
+      const text = document.getElementById('textInput').value.trim();
+      const fileInput = document.getElementById('imageInput');
+      const file = fileInput.files[0];
+
+      if (!text && !file) {
+        alert("Please write something or select an image.");
+        return;
+      }
+
+      if (file) {
+        const formData = new FormData();
+        formData.append('image', file);
+        await fetch('/upload-image', { method: 'POST', body: formData });
+      }
+
+      if (text) {
+        await fetch('/submit-post', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ content: text })
+        });
+      }
+
+      document.getElementById('textInput').value = '';
+      document.getElementById('imageInput').value = '';
+      alert("Post submitted!");
+      loadPosts();
+    }
+
+    async function loadPosts() {
+      const postContainer = document.getElementById('postContainer');
+      try {
+        const res = await fetch('/get-posts');
+        const posts = await res.json();
+
+        if (!posts.length) {
+          postContainer.innerHTML = "<p>No posts yet.</p>";
+          return;
+        }
+
+        postContainer.innerHTML = posts.map(post => {
+          if (post.type === 'text') {
+            return `<div class="post"><p>${post.content}</p></div>`;
+          } else if (post.type === 'image' && post.filename) {
+            return `<div class="post"><img src="/gallery/${post.filename}" alt="Image post" /></div>`;
+          } else {
+            return `<div class="post"><p style="color:red;">Invalid post</p></div>`;
+          }
+        }).join('');
+      } catch (err) {
+        console.error("Error loading posts:", err);
+        postContainer.innerHTML = "<p style='color:red;'>Failed to load posts.</p>";
+      }
+    }
+
+    async function changePassword(event) {
+      event.preventDefault();
+      const oldPassword = document.getElementById('oldPassword').value;
+      const newPassword = document.getElementById('newPassword').value;
+      const confirmPassword = document.getElementById('confirmPassword').value;
+
+      if (newPassword !== confirmPassword) {
+        alert("Passwords do not match.");
+        return;
+      }
+
+      const res = await fetch('/change-password', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ oldPassword, newPassword })
+      });
+
+      const data = await res.json();
+      alert(data.message);
+    }
+
+    window.onload = loadPosts;
+  </script>
+</body>
+</html>
